@@ -1,0 +1,228 @@
+/* RESET */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: Arial, sans-serif;
+  background: #f4f6f8;
+  color: #333;
+}
+
+/* HEADER */
+header {
+  background: #2c3e50;
+  color: white;
+  padding: 15px;
+  text-align: center;
+  font-size: 1.2rem;
+}
+
+/* CONTENIDO */
+main {
+  padding: 15px;
+  max-width: 900px;
+  margin: auto;
+}
+
+/* TARJETAS DE REPORTES */
+#report-list > div {
+  background: white;
+  border-radius: 12px;
+  padding: 15px;
+  margin-bottom: 15px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+}
+
+#report-list img {
+  width: 100%;
+  max-width: 250px;
+  border-radius: 8px;
+  margin-top: 10px;
+}
+
+/* BOTÓN FLOTANTE */
+#fab {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  background: #3498db;
+  color: white;
+  border: none;
+  border-radius: 50%;
+  font-size: 24px;
+  width: 60px;
+  height: 60px;
+  cursor: pointer;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+}
+
+/* MODAL */
+#modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.5);
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.modal-content {
+  background: white;
+  padding: 20px;
+  border-radius: 12px;
+  width: 90%;
+  max-width: 500px;
+
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+/* INPUTS */
+input, textarea, button {
+  padding: 10px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  font-size: 1rem;
+}
+
+textarea {
+  resize: none;
+}
+
+/* BOTONES */
+button {
+  background: #3498db;
+  color: white;
+  border: none;
+  cursor: pointer;
+}
+
+button:hover {
+  background: #2980b9;
+}
+
+/* BOTÓN CANCELAR */
+#closeModal, #closeCamera {
+  background: #e74c3c;
+}
+
+#closeModal:hover, #closeCamera:hover {
+  background: #c0392b;
+}
+
+/* CÁMARA */
+#cameraContainer {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: black;
+
+  display: none; /* oculto por defecto */
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+
+  z-index: 9999; /* 🔥 importante */
+}
+
+#cameraContainer.active {
+  display: flex; /*visible */
+}
+
+#camera {
+  width: 100%;
+  height: 70vh;
+  background: black;
+  object-fit: cover;
+}
+
+/* PREVIEW */
+#preview {
+  margin-top: 10px;
+  border-radius: 8px;
+  max-width: 100%;
+}
+
+/* HIDDEN */
+.hidden {
+  display: none !important;
+}
+
+#canvas {
+  display: none;
+}
+
+/* MOBILE FIRST (ya está optimizado) */
+
+
+/* TABLET */
+@media (min-width: 600px) {
+
+  .modal-content {
+    width: 80%;
+  }
+
+  #report-list img {
+    max-width: 300px;
+  }
+}
+
+
+/* DESKTOP */
+@media (min-width: 900px) {
+
+  main {
+    padding: 20px;
+  }
+
+  #report-list > div {
+    display: flex;
+    gap: 20px;
+    align-items: center;
+  }
+
+  #report-list img {
+    width: 200px;
+  }
+
+  #report-list > div div {
+    flex: 1;
+  }
+
+  .modal-content {
+    width: 400px;
+  }
+}
+
+/* Añadimos el botón de eliminar a la lista de estilos rojos */
+#closeModal, #closeCamera, #deletePhotoBtn {
+  background: #e74c3c;
+  margin-top: 5px;
+  width: 100%; /* Para que ocupe el ancho en el modal */
+}
+
+#closeModal:hover, #closeCamera:hover, #deletePhotoBtn:hover {
+  background: #c0392b;
+}
+
+#photoContainer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+}
+
+/* Asegurar que el modal esté realmente oculto */
+.hidden {
+  display: none !important;
+}
