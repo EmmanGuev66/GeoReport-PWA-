@@ -61,17 +61,26 @@ async function loadReports() {
     return;
   }
 
+  //Carga los reportes
   reports.forEach(r => {
-    const div = document.createElement('div');
-    div.innerHTML = `
-      <h3>${r.title}</h3>
-      <p>${r.description}</p>
-      ${r.photo ? `<img src="${r.photo}" width="120">` : ''}
-      ${r.location ? `<p>📍 ${r.location.lat}, ${r.location.lng}</p>` : ''}
-      <p>Estado: ${r.synced ? 'Enviado' : 'Pendiente'}</p>
-      <hr>
+  const div = document.createElement('div');
+  div.className = 'report-item'; // Opcional: para dar estilos CSS
+  
+  div.innerHTML = `
+    <h3>${r.title}</h3>
+    <small>ID: ${r.id}</small>
+    <p>${r.description}</p>
+    ${r.photo ? `<img src="${r.photo}" width="120" style="display:block; margin: 10px 0;">` : ''}
+    ${r.location ? `<p>Ubicación: ${r.location.lat.toFixed(4)}, ${r.location.lng.toFixed(4)}</p>` : ''}
+    <p><strong>Fecha:</strong> ${new Date(r.date).toLocaleString()}</p>
+    <p><strong>Estado:</strong> 
+      <span style="color: ${r.synced ? 'green' : 'orange'}">
+        ${r.synced ? 'Enviado' : 'Pendiente'}
+      </span>
+    </p>
+    <hr>
     `;
-    reportList.appendChild(div);
+     reportList.appendChild(div);
   });
 }
 
@@ -116,7 +125,6 @@ function closeCamera() {
 }
 
 //INICIALIZACIÓN DE DB
-
 initDB().then(() => {
   dbReady = true;
   loadReports();
@@ -142,6 +150,7 @@ photoInput.addEventListener('change', async e => {
   deletePhotoBtn.classList.remove('hidden');
 });
 
+//Borrar imagenes/fotos
 deletePhotoBtn.addEventListener('click', () => {
   currentPhoto = null;
   preview.src = '';
@@ -189,8 +198,8 @@ getLocationBtn.addEventListener('click', () => {
 
 //Guarda Reporte
 saveBtn.addEventListener('click', async () => {
-  if (!titleInput.value || !descInput.value || !photoInput.value || !locationText.value) 
-    return alert("El reporte debe incluir titulo, descripcion, imagen y localizacion, revisa los campos");
+  if (!titleInput.value || !descInput.value) 
+    return alert("El reporte debe incluir titulo, y descripcion, revisa los campos");
 
   const report = {
     id: Date.now(),
