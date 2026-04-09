@@ -17,6 +17,7 @@ const startCameraBtn = document.getElementById('startCamera');
 const takePhotoBtn = document.getElementById('takePhoto');
 const cameraContainer = document.getElementById('cameraContainer');
 const closeCameraBtn = document.getElementById('closeCamera');
+const statusDiv = document.getElementById("connectionStatus");
 
 let stream = null;
 let currentPhoto = null; 
@@ -32,9 +33,49 @@ if ('serviceWorker' in navigator) {
   });
 }
 
-function isOnline() { return navigator.onLine; }
+//Valida conexión real a Internet
+async function isReallyOnline() {
+  try {
+    await fetch('https://www.google.com/generate_204', {
+      method: 'GET',
+      mode: 'no-cors'
+    });
+    console.log('fetch exitoso');
+    return true;
+  } catch {
+    console.log('fetch fallido');
+    return false;
+  }
+}
 
+//Actualiza estado de conexión
+async function updateConnectionStatus() {
+  const online = await isReallyOnline();
+
+  if (online) {
+    statusDiv.textContent = "🟢 En línea";
+    statusDiv.classList.remove("offline");
+    statusDiv.classList.add("online");
+  } else {
+    statusDiv.textContent = "🔴 Sin conexión";
+    statusDiv.classList.remove("online");
+    statusDiv.classList.add("offline");
+  }
+}
+
+window.addEventListener('online', updateConnectionStatus);
+window.addEventListener('offline', updateConnectionStatus);
+updateConnectionStatus();
+
+window.addEventListener('online', syncReports);
 //Notificaciones
+// Solicitar permiso al cargar
+if ("Notification" in window) {
+  Notification.requestPermission().then(permission => {
+    console.log("Permiso de notificaciones:", permission);
+  });
+}
+
 function showNotification(message) {
   if (Notification.permission === "granted") {
     new Notification("GeoReport", { body: message });
@@ -86,18 +127,24 @@ async function loadReports() {
 
 //Sincroniza reportes
 async function syncReports() {
-  if (typeof getAllReports !== 'undefined') {
-    const reports = await getAllReports();
-    for (let r of reports) {
-      if (!r.synced) {
-        // Simulación de envío
-        await new Promise(res => setTimeout(res, 1000));
-        r.synced = true;
-        await updateReport(r); 
-      }
+  const online = await isReallyOnline();
+  if (!online) return;
+
+  const reports = await getAllReports();
+
+  for (let r of reports) {
+    if (!r.synced) {
+      // simular envío
+      await new Promise(res => setTimeout(res, 1000));
+
+      r.synced = true;
+      await updateReport(r);
+
+      showNotification(`Reporte "${r.title}" enviado`);
     }
-    loadReports();
   }
+
+  loadReports();
 }
 
 //Resetea formulario
@@ -132,8 +179,14 @@ initDB().then(() => {
 });
 
 //EVENT LISTENERS
-fab.addEventListener('click', () => {
+
+//Abre el formulario
+fab.addEventListener('click', async () => {
   modal.classList.remove('hidden');
+  if (Notification.permission === "default") {
+    const permission = await Notification.requestPermission();
+    console.log("Permiso:", permission);
+  }
 });
 
 closeModal.addEventListener('click', () => {
@@ -211,12 +264,15 @@ saveBtn.addEventListener('click', async () => {
     synced: false
   };
 
-  if (isOnline()) {
+   const online = await isReallyOnline();
+
+    if (online) {
     report.synced = true;
-    showNotification("Reporte enviado");
-  } else {
-    showNotification("Guardado offline");
-  }
+    await updateReport(report);
+    showNotification(`Reporte "${report.title}" enviado correctamente`);
+    } else {
+      showNotification(`Reporte "${report.title}" guardado (pendiente de envío)`);
+      }
 
   await saveReportDB(report);
   loadReports();

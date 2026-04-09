@@ -203,8 +203,6 @@ button:hover {
     width: 400px;
   }
 }
-
-/* Añadimos el botón de eliminar a la lista de estilos rojos */
 #closeModal, #closeCamera, #deletePhotoBtn {
   background: #e74c3c;
   margin-top: 5px;
@@ -225,4 +223,21 @@ button:hover {
 /* Asegurar que el modal esté realmente oculto */
 .hidden {
   display: none !important;
+}
+
+#connectionStatus {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+}
+
+.online {
+  background-color: #4CAF50;
+  color: white;
+}
+
+.offline {
+  background-color: #f44336;
+  color: white;
 }
